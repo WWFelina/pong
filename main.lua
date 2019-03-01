@@ -186,12 +186,17 @@ function love.update(dt)
     end
 
     -- player 2
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
+  --  if ball:collides(player1) then
+    --    if ball.y <= 0 then
+      --    time = (VIRTUAL_WIDTH - ball.x)/ball.dx
+        --  y_collision = -ball.dy*time
+        -- TODO try and complete this logic, should be more efficient than the one I'm doing now
+    if ball.y < player2.y then
+      player2.dy = -PADDLE_SPEED
+    elseif ball.y > player2.y then
+      player2.dy = PADDLE_SPEED
     else
-        player2.dy = 0
+      player1.dy = 0
     end
 
     -- only update the ball if the game is ongoing
