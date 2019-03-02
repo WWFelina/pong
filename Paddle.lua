@@ -50,10 +50,21 @@ function Paddle:update(dt)
     end
 end
 
-function Paddle:ai(y_location)
-  if self.y > y_location then
+function Paddle:restore()
+  if self.y - 10> VIRTUAL_HEIGHT/2 then
     self.dy = -PADDLE_SPEED
-  elseif self.y < y_location then
+  elseif self.y - 10 < VIRTUAL_HEIGHT/2 then
+    self.dy = PADDLE_SPEED
+  else
+    self.dy = 0
+  end
+end
+
+function Paddle:ai(y_location)
+  -- +10 ensures that the paddle tries to hit the ball with it's centre. This eliminates chances of error
+  if self.y + 10 > y_location then
+    self.dy = -PADDLE_SPEED
+  elseif self.y + 10 < y_location then
     self.dy = PADDLE_SPEED
   else
     self.dy = 0
