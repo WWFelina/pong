@@ -10,7 +10,7 @@
     Represents a paddle that can move up and down. Used in the main
     program to deflect the ball back toward the opponent.
 ]]
-
+PADDLE_SPEED = 200
 Paddle = Class{}
 
 --[[
@@ -48,6 +48,16 @@ function Paddle:update(dt)
     else
         self.y = math.min(VIRTUAL_HEIGHT - self.height, self.y + self.dy * dt)
     end
+end
+
+function Paddle:ai(y_location)
+  if self.y > y_location then
+    self.dy = -PADDLE_SPEED
+  elseif self.y < y_location then
+    self.dy = PADDLE_SPEED
+  else
+    self.dy = 0
+  end
 end
 
 --[[
