@@ -19,6 +19,8 @@ VIRTUAL_HEIGHT = 243
 
 PADDLE_SPEED = 200
 
+predicted_y = 0
+
 --[[
     Called just once at the beginning of the game; used to set up
     game objects, variables, etc. and prepare the game world.
@@ -97,6 +99,8 @@ function love.update(dt)
         else
             ball.dx = -math.random(140, 200)
         end
+        time = (VIRTUAL_WIDTH/2)/ball.dx
+        predicted_y = (VIRTUAL_HEIGHT/2) + ball.dy*time
     elseif gameState == 'play' then
         -- if ball collides with a player, the direction of x velocity must change
         -- but the direction of y velocity need not change.
@@ -113,6 +117,7 @@ function love.update(dt)
             else
                 ball.dy = math.random(10, 150)
             end
+            predicted_y = ball.y + ball.dy*(VIRTUAL_WIDTH/ball.dx)
 
             sounds['paddle_hit']:play()
         end
@@ -125,7 +130,6 @@ function love.update(dt)
             else
                 ball.dy = math.random(10, 150)
             end
-
             sounds['paddle_hit']:play()
         end
 
@@ -134,6 +138,8 @@ function love.update(dt)
             ball.y = 0
             ball.dy = -ball.dy
             sounds['wall_hit']:play()
+            time = (VIRTUAL_WIDTH-ball.x)/ball.dx
+            predicted_y = ball.dy*time
         end
 
         -- 4 is the ball's dimension
@@ -141,7 +147,11 @@ function love.update(dt)
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
             sounds['wall_hit']:play()
+            time = (VIRTUAL_WIDTH-ball.x)/ball.dx
+            predicted_y = VIRTUAL_HEIGHT + (ball.dy*time)
         end
+
+        player2:ai(predicted_y)
 
         -- if the ball is at the left edge of the screen, that implies player2
         -- scored and player1 will serve next
@@ -186,18 +196,10 @@ function love.update(dt)
     end
 
     -- player 2
-  --  if ball:collides(player1) then
-    --    if ball.y <= 0 then
-      --    time = (VIRTUAL_WIDTH - ball.x)/ball.dx
-        --  y_collision = -ball.dy*time
-        -- TODO try and complete this logic, should be more efficient than the one I'm doing now
-    if ball.y < player2.y then
-      player2.dy = -PADDLE_SPEED
-    elseif ball.y > player2.y then
-      player2.dy = PADDLE_SPEED
-    else
-      player1.dy = 0
-    end
+
+
+
+
 
     -- only update the ball if the game is ongoing
     if gameState == 'play' then
